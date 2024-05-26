@@ -24,7 +24,9 @@ class PixelArtPaint: #la clase para la ventana principal (Y unica ventana)
 
         ancho_ventana = 850  # Ancho de la ventana principal
         alto_ventana = 600  # Alto de la ventana principal
-        self.root.geometry(f"{ancho_ventana}x{alto_ventana}")
+        self.root.geometry(f"{ancho_ventana}x{alto_ventana}") #Da el tamaño de la ventana
+        self.root.resizable(False, False) #Impide al usuario modificar las dimensiones de la ventana
+        
 
         self.canvas = tk.Canvas(root, width=self.pixel_size * self.grid_size, height=self.pixel_size * self.grid_size)
         self.canvas.pack()
