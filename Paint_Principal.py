@@ -41,6 +41,8 @@ class PixelArtPaint:  # la clase para la ventana principal (Y unica ventana)
         self.create_grid()
         self.create_color_buttons()
         self.create_print_button()
+        self.create_save_button()
+        self.create_load_button()
 
     def create_grid(self):  # Encargada de generar la cuadricula o lienzo para dibujar
         for i in range(self.grid_size):
@@ -64,6 +66,14 @@ class PixelArtPaint:  # la clase para la ventana principal (Y unica ventana)
         print_button = tk.Button(self.root, text="Print Matrix", command=self.print_matrix)
         print_button.pack(pady=10)
 
+    def create_save_button(self):
+        save_button = tk.Button(self.root, text="Save Matrix", command=self.save_matrix)
+        save_button.pack(pady=10)
+
+    def create_load_button(self):
+        load_button = tk.Button(self.root, text="Load Matrix", command=self.load_matrix)
+        load_button.place(x=50,y=100)
+
     def seleccion_color(self, color_index):  # actualiza la variable que guarda el color
         self.selected_color_index = color_index
         print(self.selected_color_index)
@@ -85,6 +95,47 @@ class PixelArtPaint:  # la clase para la ventana principal (Y unica ventana)
     def print_matrix(self):
         for row in self.grid_matrix:
             print(row)
+
+    def save_matrix(self):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+        if file_path:
+            with open(file_path, 'w') as file:
+                for row in self.grid_matrix:
+                    file.write(' '.join(map(str, row)) + '\n')
+            print(f"Matrix saved to {file_path}")
+
+    def load_matrix(self):
+        # Abre un cuadro de diálogo para seleccionar un archivo .txt
+        file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+        # Si se selecciona un archivo (file_path no es una cadena vacía)
+        if file_path:
+            # Abre el archivo en modo lectura
+            with open(file_path, 'r') as file:
+                # Inicializa el contador de filas
+                y = 0
+                for line in file:
+                    # Convierte la línea en una lista de enteros, dividiendo la línea en sus componentes y mapeando cada uno a un entero
+                    row = list(map(int, line.strip().split()))
+                    # Inicializa el contador de columnas
+                    x = 0
+                    for color_index in row:
+                        # Actualiza la matriz grid_matrix con el índice del color
+                        self.grid_matrix[y][x] = color_index
+                        # Obtiene el color correspondiente al índice del diccionario de colores
+                        color = self.colors[color_index]
+                        # Calcula las coordenadas del rectángulo en el lienzo
+                        x0 = x * self.pixel_size
+                        y0 = y * self.pixel_size
+                        x1 = x0 + self.pixel_size
+                        y1 = y0 + self.pixel_size
+                        # Dibuja el rectángulo en el lienzo con el color correspondiente
+                        self.canvas.create_rectangle(x0, y0, x1, y1, outline="gray", fill=color)
+                        # Incrementa el contador de columnas
+                        x += 1
+                    # Incrementa el contador de filas
+                    y += 1
+            # Imprime un mensaje en la consola indicando que la matriz se ha cargado desde el archivo
+            print(f"Matrix loaded from {file_path}")
 
 
 if __name__ == "__main__":  # Aqui es donde genera la ventana y mantiene el ciclo de la ventana principal
