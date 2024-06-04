@@ -16,10 +16,10 @@ class PixelArtPaint:
         self.grid_matrix = [[0 for _ in range(self.grid_size)] for _ in range(self.grid_size)]
 
         # Configuración de la ventana
-        ancho_ventana = 850
-        alto_ventana = 700
-        self.root.geometry(f"{ancho_ventana}x{alto_ventana}")
-        self.root.resizable(False, False)
+        ancho_ventana = 850 # Ancho
+        alto_ventana = 700 # Alto
+        self.root.geometry(f"{ancho_ventana}x{alto_ventana}") # Da el valor de la ventana por una operación
+        self.root.resizable(False, False) # Esto impide modificar las dimensiones de manera usuario
 
         # Configuración del canvas y las barras de desplazamiento
         self.canvas_frame = tk.Frame(root)
@@ -59,26 +59,26 @@ class PixelArtPaint:
                 y1 = y0 + self.pixel_size
                 color = self.colors[self.grid_matrix[j][i]]
                 self.canvas.create_rectangle(x0, y0, x1, y1, outline="gray", fill=color, tags="grid")
-
+# Creación de la paleta de colores
     def create_color_buttons(self):
         button_frame = tk.Frame(self.root)
         button_frame.pack()
         for color_index, color in self.colors.items():
             button = tk.Button(button_frame, bg=color, width=4, height=2, command=lambda index=color_index: self.seleccion_color(index))
             button.grid(row=0, column=color_index)
-
+# Creación del botón que imprime en la terminal la matriz
     def create_print_button(self):
         print_button = tk.Button(self.root, text="Print Matrix", command=self.print_matrix)
         print_button.pack(pady=10)
-
+# Creación del botón de guardar 
     def create_save_button(self):
         save_button = tk.Button(self.root, text="Save Matrix", command=self.save_matrix)
         save_button.pack(pady=10)
-
+# Creación del botón de ccargar
     def create_load_button(self):
         load_button = tk.Button(self.root, text="Load Matrix", command=self.load_matrix)
         load_button.place(x=50, y=100)
-
+# Creación del botón zoom in y zoom out
     def create_zoom_buttons(self):
         zoom_frame = tk.Frame(self.root)
         zoom_frame.pack(pady=10)
@@ -86,38 +86,38 @@ class PixelArtPaint:
         zoom_in_button.grid(row=0, column=0)
         zoom_out_button = tk.Button(zoom_frame, text="Zoom Out", command=self.zoom_out)
         zoom_out_button.grid(row=0, column=1)
-
+# Creación del botón de limpiar
     def create_clear_button(self):
         clear_button = tk.Button(self.root, text="Clear", command=self.clear_canvas)
         clear_button.place(x=50, y=50)  # Asegúrate de que 'pady' no está interfiriendo.
-
+# Creación del botón mirror horizontal
     def create_mirror_button(self):
         mirror_button = tk.Button(self.root, text="Mirror Horizontal", command=self.mirror_colors)
         mirror_button.place(x= 50, y=150)
-        
+# Creación del botón mirror vertical
     def create_mirror_vertical_button(self):
         mirror_vertical_button = tk.Button(self.root, text="Mirror Vertical", command=self.mirror_vertical)
         mirror_vertical_button.place(x=50, y=200)
-
+# Craeción del botón "Alto contraste"
     def alto_contraste_button(self):
         alto_contraste_button = tk.Button(self.root, text="Alto Contraste", command=self.transform_colors)
         alto_contraste_button.place(x=50, y=250)
-
+# Creación del botón "Negativo"
     def negativo_button(self):
         negativo_button = tk.Button(self.root, text="Negativo", command=self.negativo)
         negativo_button.place(x=50, y=300)
-
+# Función para seleccionar el color
     def seleccion_color(self, color_index):
         self.selected_color_index = color_index
         print(color_index)
-
+# Función para dibujar
     def paint(self, event):
         x = event.x // self.pixel_size
         y = event.y // self.pixel_size
         if x < self.grid_size and y < self.grid_size:
             self.grid_matrix[y][x] = self.selected_color_index
             self.update_color_in_grid(x, y)
-
+# ¿¿¿???
     def update_color_in_grid(self, x, y):
         color = self.colors[self.grid_matrix[y][x]]
         x0 = x * self.pixel_size
@@ -149,14 +149,14 @@ class PixelArtPaint:
                 else:
                     self.grid_matrix[y][x] = 9
         self.create_grid()
-
+# Función para invertir los colores 
     def negativo(self):
         color_mapping = {0: 9, 1: 8, 2: 7, 3: 6, 4: 5, 5: 4, 6: 3, 7: 2, 8: 1, 9: 0}
         for y in range(self.grid_size):
             for x in range(self.grid_size):
                 self.grid_matrix[y][x] = color_mapping[self.grid_matrix[y][x]]
         self.create_grid()
-
+# Función para cargar la matriz 
     def save_matrix(self):
         file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
         if file_path:
@@ -164,7 +164,7 @@ class PixelArtPaint:
                 for row in self.grid_matrix:
                     file.write(' '.join(map(str, row)) + '\n')
             print(f"Matrix saved to {file_path}")
-
+# Función para cargar la matriz
     def load_matrix(self):
         file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
         if file_path:
@@ -179,23 +179,23 @@ class PixelArtPaint:
                         x += 1
                     y += 1
             print(f"Matrix loaded from {file_path}")
-
+# Función para limpiar la matriz
     def clear_canvas(self):
         for y in range(self.grid_size):
             for x in range(self.grid_size):
                 self.grid_matrix[y][x] = 0
         self.create_grid()
-
+# Función para realizar el zoom in
     def zoom_in(self):
         self.pixel_size *= 2
         self.canvas.config(scrollregion=(0, 0, self.pixel_size * self.grid_size, self.pixel_size * self.grid_size))
         self.create_grid()
-
+# Función para realizar el zoom out
     def zoom_out(self):
         self.pixel_size = self.original_pixel_size
         self.canvas.config(scrollregion=(0, 0, self.pixel_size * self.grid_size, self.pixel_size * self.grid_size))
         self.create_grid()
-
+# Bucle para que la ventana no cierre
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Pixel Art")
