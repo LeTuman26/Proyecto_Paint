@@ -1,0 +1,5 @@
+Version de Python
+Python 3.11
+
+Consideracion
+al hora de usar Zoom in no intente dibujar o pintar ya que no funciona
